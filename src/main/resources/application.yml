@@ -1,0 +1,77 @@
+server:
+  port: 8093
+
+spring:
+  application:
+    name: gateway-client
+  boot.admin.client.url: http://192.168.26.128:8091  # Spring Boot Admin Server 地址   http://localhost:8080  可自定义
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://admin:123456@192.168.26.128:8761/eureka/  #可用区域映射到与eureka服务器通信的完全限定URL列表。每个值可以是单个URL或逗号分隔的备用位置列表。(http://${eureka.instance.hostname}:${server.port}/eureka/):
+    enabled: true            #用于指示Eureka客户端已启用的标志:        #true
+    fetch-registry: true        #客户端是否获取eureka服务器注册表上的注册信息，默认为true:        #true
+    register-with-eureka: true       #指示此实例是否应将其信息注册到eureka服务器以供其他服务发现，默认为false
+
+    registry-fetch-interval-seconds: 5       #指示从eureka服务器获取注册表信息的频率（s）:        #30
+    instance-info-replication-interval-seconds: 30       #更新实例信息的变化到Eureka服务端的间隔时间，（s）:        #30
+    initial-instance-info-replication-interval-seconds: 40       #初始化实例信息到Eureka服务端的间隔时间，（s）val = 40
+    eureka-service-url-poll-interval-seconds: 300 #询问Eureka Server信息变化的时间间隔（s），默认为300秒 	300
+    eureka-server-read-timeout-seconds: 8 #读取Eureka Server 超时时间（s），默认8秒
+    eureka-server-connect-timeout-seconds: 5 #连接Eureka Server 超时时间（s），默认5秒
+    eureka-server-total-connections: 200       #获取从eureka客户端到所有eureka服务器的连接总数,默认200个:        #200
+    eureka-server-total-connections-per-host: 50       #获取从eureka客户端到eureka服务器主机允许的连接总数，默认50个:
+
+    eureka-connection-idle-timeout-seconds: 30 #连接到 Eureka Server 空闲连接的超时时间（s），默认30
+    heartbeat-executor-thread-pool-size: 2 #心跳保持线程池初始化线程数，默认2个 	2
+    heartbeat-executor-exponential-back-off-bound: 10      #心跳超时重试延迟时间的最大乘数值，默认10
+    use-dns-for-fetching-service-urls: false       #指示eureka客户端是否应使用DNS机制来获取要与之通信的eureka服务器列表。当DNS名称更新为具有其他服务器时，eureka客户端轮询eurekaServiceUrlPollIntervalSeconds中指定的信息后立即使用该信息。val = false
+    prefer-same-zone-eureka: true       #实例是否使用同一zone里的eureka服务器，默认为true，理想状态下，eureka客户端与服务端是在同一zone下
+    log-delta-diff: false        #是否记录eureka服务器和客户端之间在注册表的信息方面的差异，默认为false
+    disable-delta: false       #指示eureka客户端是否禁用增量提取val = false
+    on-demand-update-status-change: true        #客户端的状态更新到远程服务器上，默认为true
+    allow-redirects: false       #指示服务器是否可以将客户端请求重定向到备份服务器/集群。如果设置为false，则服务器将直接处理请求。如果设置为true，则可以将HTTP重定向发送到具有新服务器位置的客户端。:        #false
+    cache-refresh-executor-exponential-back-off-bound: 10  #在发生一系列超时的情况下，它是重试延迟的最大乘数值。:        #10
+    cache-refresh-executor-thread-pool-sizeval: 2 缓存刷新线程池初始化线程数量
+    client-data-accept: full # 客户端数据接收的名称 	full
+    dollar-replacement: _       #eureka服务器序列化/反序列化的信息中获取“$”符号的替换字符串。默认为“_-”val =
+    escape-char-replacement: _       #eureka服务器序列化/反序列化的信息中获取“_”符号的的替换字符串。默认为“__“
+    eureka-server-d-n-s-name: null       #获取要查询的DNS名称来获得eureka服务器，此配置只有在eureka服务器ip地址列表是在DNS中才会用到。默认为null:        #null
+    eureka-server-port: null       #获取eureka服务器的端口，此配置只有在eureka服务器ip地址列表是在DNS中才会用到。默认为null:        #null
+    eureka-server-u-r-l-context: null       #表示eureka注册中心的路径，如果配置为eureka，则为http://ip:port/eureka/，在eureka的配置文件中加入此配置表示eureka作为客户端向注册中心注册，从而构成eureka集群。此配置只有在eureka服务器ip地址列表是在DNS中才会用到，默认为null:        #null
+    filter-only-up-instances: true #是否过滤掉非up实例，默认为true
+    g-zip-content: true       #当服务端支持压缩的情况下，是否支持从服务端获取的信息进行压缩。默认为true
+    should-enforce-registration-at-init: false       #client 在初始化阶段是否强行注册到注册中心:        #false
+    should-unregister-on-shutdown: true       #client在shutdown情况下，是否显示从注册中心注销:        #true
+    region: us-east-1        #获取此实例所在的区域（在AWS数据中心中使用）。:        #us-east-1
+
+
+  #服务实例配置项（eureka.instance.*）
+  instance:
+    #    hostname: localhost
+    appname: ${spring.application.name}-appname    #注册到注册中心的应用名称
+    lease-renewal-interval-in-seconds: 1     #该服务实例向注册中心发送心跳间隔（s） 	30
+    lease-expiration-duration-in-seconds: 2      #指示eureka服务器在删除此实例之前收到最后一次心跳之后等待的时间（s）:      #90
+    prefer-ip-address: true     #是否优先使用服务实例的IP地址，相较于hostname 	false
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}     #该服务实例在注册中心的唯一实例ID  : ${spring.cloud.client.ip-address}:${server.port}
+    ip-address: ${spring.cloud.client.ip-address}     #该服务实例的IP地址 	null
+
+#actuator配置
+info:
+  app.name: ${spring.application.name}
+  company.name: www.xzq.com
+  build.artifactId: "@project.artifactId@"
+  build.version: "@project.version@"
+# springboot 2.1.6 引入actuator需要声明导出的接口，否则不会像早期版本那样自动映射出去
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+# log
+logging:
+  file: "log/service.log"
